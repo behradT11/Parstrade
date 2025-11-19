@@ -13,12 +13,29 @@
             theme: {
                 extend: {
                     colors: {
-                        parsBlue: '#1e1e8f', // رنگ آبی لوگو
-                        parsGreen: '#00ff88', // رنگ سبز لوگو
-                        parsDark: '#0f0f3d',
+                        parsBlue: '#1e1e8f',
+                        parsGreen: '#00ff88',
+                        parsDark: '#05051a',
+                        parsGlass: 'rgba(255, 255, 255, 0.03)',
                     },
                     fontFamily: {
                         sans: ['Vazirmatn', 'sans-serif'],
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
                     }
                 }
             }
@@ -27,58 +44,70 @@
     
     <style>
         body {
-            background: linear-gradient(135deg, #0f0f3d 0%, #000000 100%);
-            background-attachment: fixed;
+            background-color: #05051a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
             color: white;
             overflow-x: hidden;
         }
         
-        /* افکت شیشه‌ای پیشرفته */
+        /* شیشه حرفه‌ای تر */
         .glass-box {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            border-radius: 16px;
-        }
-        
-        .glass-nav {
-            background: rgba(15, 15, 61, 0.8);
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 20px;
         }
 
-        /* انیمیشن‌ها */
-        .glow-text {
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5), 0 0 20px rgba(0, 255, 136, 0.3);
+        .glass-nav {
+            background: rgba(5, 5, 26, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
         }
         
-        .hover-glow:hover {
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
-            border-color: #00ff88;
+        .coming-soon-overlay {
+            background: rgba(5, 5, 26, 0.6);
+            backdrop-filter: blur(4px); 
         }
 
-        /* دایره‌های گرادینت پشت زمینه برای گرافیک بالا */
-        .blob {
-            position: absolute;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
+        /* افکت نویز برای حس حرفه‌ای */
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
     </style>
 </head>
-<body class="font-sans">
+<body class="font-sans antialiased selection:bg-parsGreen selection:text-parsBlue">
 
-    <div class="blob bg-parsBlue w-96 h-96 rounded-full top-0 right-0"></div>
-    <div class="blob bg-parsGreen w-80 h-80 rounded-full bottom-0 left-0"></div>
+    <div class="noise-bg"></div>
 
-    <div class="tradingview-widget-container w-full h-12 sticky top-0 z-50 border-b border-gray-800">
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-parsGreen rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <div class="tradingview-widget-container w-full h-10 sticky top-0 z-50 border-b border-white/5 bg-black">
         <div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
         {
         "symbols": [
-            { "proName": "FOREXCOM:NSXUSD", "title": "US 100" },
+            { "proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100" },
             { "proName": "FX_IDC:EURUSD", "title": "EUR/USD" },
             { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin" },
             { "proName": "OANDA:XAUUSD", "title": "Gold" },
@@ -86,285 +115,302 @@
         ],
         "showSymbolLogo": true,
         "colorTheme": "dark",
-        "isTransparent": false,
+        "isTransparent": true,
         "displayMode": "adaptive",
         "locale": "fa_IR"
         }
         </script>
     </div>
 
-    <nav class="glass-nav sticky top-12 z-40 w-full px-6 py-4 flex justify-between items-center">
+    <nav class="glass-nav sticky top-10 z-40 w-full px-6 py-3 flex justify-between items-center transition-all duration-300">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-parsGreen rounded flex items-center justify-center font-bold text-parsBlue text-xl">P</div>
-            <span class="text-2xl font-bold tracking-wide text-white">پارس <span class="text-parsGreen">ترید</span></span>
+            <img src="logo3.jpg" alt="Pars Trade Logo" class="w-12 h-12 rounded-full border-2 border-parsGreen shadow-[0_0_15px_rgba(0,255,136,0.3)] object-cover">
+            <span class="text-xl font-bold tracking-wide text-white hidden md:block">پارس <span class="text-parsGreen">ترید</span></span>
         </div>
         
-        <div class="hidden md:flex gap-6 text-gray-300 font-light text-sm">
-            <a href="#" class="hover:text-parsGreen transition">خانه</a>
-            <a href="#blog" class="hover:text-parsGreen transition">بلاگ</a>
-            <a href="#liveroom" class="hover:text-parsGreen transition">اتاق لایو</a>
-            <a href="#store" class="hover:text-parsGreen transition">فروشگاه</a>
+        <div class="hidden md:flex gap-8 text-gray-300 font-medium text-sm">
+            <a href="#" class="hover:text-parsGreen hover:scale-105 transition">خانه</a>
+            <a href="#blog" class="hover:text-parsGreen hover:scale-105 transition">بلاگ</a>
+            <a href="#liveroom" class="hover:text-parsGreen hover:scale-105 transition">اتاق لایو</a>
+            <a href="#services" class="hover:text-parsGreen hover:scale-105 transition">خدمات</a>
         </div>
 
         <div class="flex gap-3">
-            <a href="login.html" class="px-6 py-2 rounded-full border border-parsGreen text-parsGreen hover:bg-parsGreen hover:text-parsBlue transition font-bold text-sm shadow-[0_0_10px_rgba(0,255,136,0.2)]">
+            <a href="login.html" class="px-6 py-2 rounded-xl bg-gradient-to-r from-parsGreen to-emerald-600 text-parsDark hover:from-white hover:to-gray-200 transition font-bold text-sm shadow-[0_0_20px_rgba(0,255,136,0.3)]">
                 ورود / ثبت نام
             </a>
         </div>
     </nav>
 
-    <header class="relative container mx-auto px-4 py-20 flex flex-col md:flex-row items-center justify-between gap-10">
-        <div class="md:w-1/2 space-y-6 text-center md:text-right z-10">
-            <h1 class="text-5xl md:text-7xl font-black leading-tight">
-                آینده ترید <br>
-                در دستان <span class="text-parsGreen glow-text">شماست</span>
+    <header class="relative container mx-auto px-4 py-24 flex flex-col md:flex-row items-center justify-between gap-12">
+        <div class="md:w-1/2 space-y-8 text-center md:text-right z-10 relative">
+            <div class="absolute -top-10 -right-10 w-20 h-20 border-2 border-parsGreen/20 rounded-full animate-pulse"></div>
+            
+            <h1 class="text-5xl md:text-7xl font-black leading-tight drop-shadow-2xl">
+                ترید کردن <br>
+                به سبک <span class="text-transparent bg-clip-text bg-gradient-to-r from-parsGreen to-white text-glow">پارس ترید</span>
             </h1>
-            <p class="text-gray-300 text-lg leading-relaxed glass-box p-4 inline-block">
-                به بزرگترین کامیونیتی ترید ایران خوش آمدید. ابزارهای حرفه‌ای، منتورینگ تخصصی و تحلیل‌های لحظه‌ای در پارس ترید.
+            <p class="text-gray-300 text-lg leading-relaxed glass-box p-6 inline-block border-r-4 border-parsGreen">
+                یک کامیونیتی متفاوت برای کسانی که به دنبال واقعیت بازار هستند.
                 <br>
-                <span class="text-sm text-parsGreen mt-2 block">@Parsfarsi | @Behrise</span>
+                <span class="text-sm text-parsGreen mt-3 block font-mono opacity-80">> Join the revolution_</span>
             </p>
             <div class="flex gap-4 justify-center md:justify-start pt-4">
-                <a href="signup.html" class="px-8 py-4 bg-parsGreen text-parsBlue font-bold rounded-xl hover:scale-105 transition shadow-[0_0_20px_rgba(0,255,136,0.4)]">
-                    عضویت در کامیونیتی
+                <a href="signup.html" class="px-8 py-4 bg-parsGreen text-parsDark font-bold rounded-2xl hover:scale-105 hover:shadow-[0_0_30px_rgba(0,255,136,0.5)] transition-all duration-300">
+                    شروع رایگان
                 </a>
-                <a href="https://t.me/TradeCenterPro" class="px-8 py-4 glass-box hover:bg-white/10 transition font-bold rounded-xl flex items-center gap-2">
-                    <i class="fab fa-telegram"></i> کانال تلگرام
+                <a href="https://t.me/TradeCenterPro" class="px-8 py-4 glass-box hover:bg-white/10 transition font-bold rounded-2xl flex items-center gap-2 group">
+                    <i class="fab fa-telegram text-2xl group-hover:text-blue-400 transition"></i>
                 </a>
             </div>
         </div>
-        <div class="md:w-1/2 flex justify-center relative">
-             <div class="glass-box p-2 w-full max-w-md aspect-square flex items-center justify-center relative">
-                <div class="text-parsGreen text-9xl relative z-10">
-                    <i class="fas fa-chart-bar"></i>
+        
+        <div class="md:w-1/2 flex justify-center relative animate-float">
+             <div class="glass-box p-4 w-full max-w-md aspect-square flex flex-col items-center justify-center relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-tr from-parsGreen/10 to-transparent opacity-50 group-hover:opacity-80 transition duration-500"></div>
+                <img src="logo3.jpg" class="w-48 h-48 object-contain drop-shadow-[0_0_30px_rgba(0,255,136,0.3)] relative z-10 rounded-full" alt="Hero Logo">
+                <div class="mt-6 flex gap-4">
+                    <div class="bg-black/40 px-4 py-2 rounded text-xs text-green-400 border border-green-500/30">Winrate: +65%</div>
+                    <div class="bg-black/40 px-4 py-2 rounded text-xs text-blue-400 border border-blue-500/30">Members: 5K+</div>
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-tr from-parsGreen/20 to-transparent rounded-2xl blur-xl"></div>
              </div>
         </div>
     </header>
 
-    <section class="container mx-auto px-4 py-10">
-        <div class="flex items-center gap-2 mb-6">
-            <div class="w-1 h-8 bg-parsGreen rounded"></div>
-            <h2 class="text-3xl font-bold">داشبورد <span class="text-parsGreen">روزانه</span> بازار</h2>
+    <section class="container mx-auto px-4 py-12">
+        <div class="flex items-end gap-4 mb-8">
+            <h2 class="text-3xl md:text-4xl font-bold">ابزارهای <span class="text-parsGreen">تریدت</span></h2>
+            <div class="h-1 flex-grow bg-gradient-to-r from-parsGreen/50 to-transparent rounded-full mb-2"></div>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="glass-box p-6 hover-glow transition">
-                <div class="text-gray-400 text-sm mb-2"><i class="fas fa-clock"></i> سشن‌های فعال</div>
-                <div class="flex justify-between items-center mt-2">
-                    <span class="text-green-400 font-bold">London (Open)</span>
-                    <span class="text-red-400">New York (Closed)</span>
+            <div class="glass-box p-6 group hover:border-parsGreen/50 transition duration-300">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-gray-400 text-xs mb-1">سشن مارکت</div>
+                        <div class="text-2xl font-bold text-white">London</div>
+                    </div>
+                    <i class="fas fa-clock text-2xl text-parsGreen group-hover:rotate-12 transition"></i>
                 </div>
-                <div class="mt-4 text-xs text-gray-500">تایمر فعلی: 12:30:45 GMT</div>
+                <div class="mt-4 flex items-center gap-2 text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded w-max">
+                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span> باز است
+                </div>
             </div>
 
-            <div class="glass-box p-6 hover-glow transition">
-                <div class="text-gray-400 text-sm mb-2"><i class="fas fa-newspaper"></i> اخبار مهم امروز (High Impact)</div>
-                <ul class="space-y-2 text-sm">
-                    <li class="flex justify-between"><span class="text-red-500">CPI Data</span> <span>16:00</span></li>
-                    <li class="flex justify-between"><span class="text-orange-400">Fed Speech</span> <span>18:30</span></li>
-                </ul>
+            <div class="glass-box p-6 group hover:border-parsGreen/50 transition duration-300">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-gray-400 text-xs mb-1">تایمر کندل (H1)</div>
+                        <div class="text-2xl font-bold font-mono text-white">14:35</div>
+                    </div>
+                    <i class="fas fa-hourglass-half text-2xl text-orange-400 group-hover:spin transition"></i>
+                </div>
+                <div class="w-full bg-gray-700 h-1.5 rounded-full mt-5 overflow-hidden">
+                    <div class="bg-orange-400 h-full w-[45%]"></div>
+                </div>
             </div>
 
-            <div class="glass-box p-6 hover-glow transition">
-                <div class="text-gray-400 text-sm mb-2"><i class="fas fa-chart-line"></i> ولتیلیتی (نوسان) فعلی</div>
-                <div class="text-3xl font-bold text-white">High</div>
-                <div class="w-full bg-gray-700 h-2 rounded-full mt-2 overflow-hidden">
-                    <div class="bg-red-500 h-full" style="width: 80%"></div>
+            <div class="glass-box p-6 group hover:border-parsGreen/50 transition duration-300">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-gray-400 text-xs mb-1">خبر مهم بعدی</div>
+                        <div class="text-lg font-bold text-red-400">CPI Data</div>
+                    </div>
+                    <i class="fas fa-bullhorn text-2xl text-red-500 group-hover:scale-110 transition"></i>
                 </div>
-                <p class="text-xs mt-2 text-gray-400">مراقب اسپردها باشید</p>
+                <div class="mt-3 text-xs text-gray-400">تا 35 دقیقه دیگر</div>
             </div>
 
-            <div class="glass-box p-6 hover-glow transition relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 bg-red-600 text-white px-6 py-1 rotate-45 text-xs font-bold">HOT</div>
-                <div class="text-gray-400 text-sm mb-2"><i class="fas fa-fire"></i> واچ‌لیست داغ</div>
-                <div class="flex flex-wrap gap-2">
-                    <span class="bg-white/10 px-2 py-1 rounded text-sm">XAUUSD</span>
-                    <span class="bg-white/10 px-2 py-1 rounded text-sm">NAS100</span>
-                    <span class="bg-white/10 px-2 py-1 rounded text-sm">GBPJPY</span>
+            <div class="glass-box p-6 group hover:border-parsGreen/50 transition duration-300">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-gray-400 text-xs mb-1">وضعیت نوسان</div>
+                        <div class="text-2xl font-bold text-parsGreen">Extreme</div>
+                    </div>
+                    <i class="fas fa-bolt text-2xl text-yellow-400 group-hover:scale-125 transition"></i>
                 </div>
+                <div class="mt-4 text-xs text-gray-400">اسپردها ممکن است واید شوند</div>
             </div>
         </div>
     </section>
 
-    <section class="container mx-auto px-4 py-16 relative">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold mb-4">جعبه ابزار <span class="text-parsGreen">معامله‌گران</span></h2>
-            <p class="text-gray-400">برای دسترسی به ابزارهای حرفه‌ای وارد حساب کاربری خود شوید</p>
-        </div>
-
+    <section class="container mx-auto px-4 py-16">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <a href="login.html" class="block group">
-                <div class="glass-box p-8 h-full relative overflow-hidden border-t-4 border-transparent hover:border-parsGreen transition-all duration-500">
-                    <div class="absolute right-0 top-0 bg-parsGreen/20 w-32 h-32 blur-3xl rounded-full"></div>
-                    <div class="relative z-10">
-                        <div class="text-5xl text-parsGreen mb-4 group-hover:scale-110 transition transform"><i class="fas fa-book-journal-whills"></i></div>
-                        <h3 class="text-2xl font-bold text-white mb-2">ژورنال ترید (Trader Tools)</h3>
-                        <p class="text-gray-400 text-sm">ثبت و آنالیز دقیق معاملات شما. گزارش‌گیری پیشرفته برای بهبود وین‌ریت.</p>
-                        <div class="mt-6 flex items-center text-parsGreen text-sm font-bold">
-                            <i class="fas fa-lock mr-2"></i> نیازمند ورود
+            <a href="login.html" class="block group perspective-1000">
+                <div class="glass-box p-8 h-full relative overflow-hidden hover:transform hover:-translate-y-2 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-r from-parsGreen/10 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="p-4 bg-parsGreen/10 rounded-2xl text-parsGreen text-3xl">
+                                <i class="fas fa-book-journal-whills"></i>
+                            </div>
+                            <i class="fas fa-lock text-gray-500"></i>
                         </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">ژورنال ترید (Trader Tools)</h3>
+                        <p class="text-gray-400 text-sm mb-4">قدرتمندترین ابزار برای بررسی عملکرد معاملاتی شما.</p>
+                        <span class="text-parsGreen text-sm font-bold mt-auto flex items-center gap-2">
+                            ورود به پنل <i class="fas fa-arrow-left group-hover:-translate-x-2 transition"></i>
+                        </span>
                     </div>
                 </div>
             </a>
 
             <a href="login.html" class="block group">
-                <div class="glass-box p-8 h-full relative overflow-hidden border-t-4 border-transparent hover:border-parsGreen transition-all duration-500">
-                    <div class="absolute left-0 bottom-0 bg-blue-500/20 w-32 h-32 blur-3xl rounded-full"></div>
-                    <div class="relative z-10">
-                        <div class="text-5xl text-blue-400 mb-4 group-hover:scale-110 transition transform"><i class="fas fa-chart-area"></i></div>
-                        <h3 class="text-2xl font-bold text-white mb-2">ابزارهای OF و چارت</h3>
-                        <p class="text-gray-400 text-sm">دسترسی به دیتای Order Flow، والیوم پروفایل و چارت‌های اختصاصی پارس ترید.</p>
-                        <div class="mt-6 flex items-center text-parsGreen text-sm font-bold">
-                            <i class="fas fa-lock mr-2"></i> نیازمند ورود
+                <div class="glass-box p-8 h-full relative overflow-hidden hover:transform hover:-translate-y-2 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+                    <div class="relative z-10 flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="p-4 bg-blue-500/10 rounded-2xl text-blue-400 text-3xl">
+                                <i class="fas fa-chart-area"></i>
+                            </div>
+                            <i class="fas fa-lock text-gray-500"></i>
                         </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">ابزارهای OF و چارت</h3>
+                        <p class="text-gray-400 text-sm mb-4">دسترسی به والیوم پروفایل، اوردر فلو و چارت‌های ویژه.</p>
+                        <span class="text-blue-400 text-sm font-bold mt-auto flex items-center gap-2">
+                            ورود به پنل <i class="fas fa-arrow-left group-hover:-translate-x-2 transition"></i>
+                        </span>
                     </div>
                 </div>
             </a>
         </div>
     </section>
 
-    <section id="liveroom" class="py-16 bg-gradient-to-b from-transparent to-parsBlue/20">
-        <div class="container mx-auto px-4 text-center">
-            <div class="glass-box p-10 md:p-16 max-w-4xl mx-auto border-parsGreen border-opacity-30 shadow-[0_0_50px_rgba(0,255,136,0.1)]">
-                <div class="inline-block p-4 rounded-full bg-red-500/20 text-red-500 mb-4 animate-pulse">
-                    <i class="fas fa-circle text-xs"></i> LIVE
+    <section class="py-20 relative overflow-hidden">
+        <div class="absolute inset-0 bg-parsGreen/5 skew-y-3 transform origin-top-left"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">چرا <span class="text-parsGreen">پارس ترید؟</span></h2>
+                <p class="text-gray-400">تمایز ما در کیفیت آموزش و ابزارهاست</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-box p-8 text-center hover:bg-parsGreen/10 transition duration-500 border-t-4 border-parsGreen">
+                    <div class="w-20 h-20 mx-auto bg-black rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(0,255,136,0.3)]">
+                        <i class="fas fa-users text-3xl text-parsGreen"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">کامیونیتی فعال</h3>
+                    <p class="text-gray-400 text-sm">ارتباط مستقیم با برترین تریدرهای ایران در فضایی سالم.</p>
                 </div>
-                <h2 class="text-4xl font-bold mb-6">اتاق لایو ترید</h2>
-                <p class="text-gray-300 mb-8 text-lg">
-                    همین حالا به اتاق معاملاتی ما بپیوندید و همراه با منتورها و دیگر تریدرها بازار را تحلیل کنید.
-                </p>
-                <a href="https://t.me/TradeCenterPro" class="inline-block px-10 py-4 bg-parsGreen text-parsBlue font-bold text-lg rounded-xl hover:shadow-[0_0_30px_rgba(0,255,136,0.6)] transition transform hover:-translate-y-1">
-                    <i class="fas fa-headset ml-2"></i> ورود به اتاق لایو
-                </a>
+                <div class="glass-box p-8 text-center hover:bg-blue-500/10 transition duration-500 border-t-4 border-blue-500">
+                    <div class="w-20 h-20 mx-auto bg-black rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+                        <i class="fas fa-tachometer-alt text-3xl text-blue-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">سرعت و دقت</h3>
+                    <p class="text-gray-400 text-sm">دیتای لول 2 و ابزارهای بدون تاخیر برای اسکالپرها.</p>
+                </div>
+                <div class="glass-box p-8 text-center hover:bg-purple-500/10 transition duration-500 border-t-4 border-purple-500">
+                    <div class="w-20 h-20 mx-auto bg-black rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                        <i class="fas fa-graduation-cap text-3xl text-purple-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">آموزش نوین</h3>
+                    <p class="text-gray-400 text-sm">دوری از مباحث تکراری و تمرکز بر روانشناسی و جریان سفارشات.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="store" class="container mx-auto px-4 py-16">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-bold">فروشگاه <span class="text-parsGreen">خدمات</span></h2>
-            <a href="#" class="text-parsGreen hover:underline">مشاهده همه <i class="fas fa-arrow-left"></i></a>
+    <section id="liveroom" class="py-16 container mx-auto px-4">
+        <div class="glass-box p-1 rounded-3xl bg-gradient-to-r from-parsGreen via-blue-500 to-purple-600">
+            <div class="bg-[#0a0a20] rounded-[22px] p-10 md:p-16 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+                
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-red-500/10 text-red-500 border border-red-500/20 mb-6 animate-pulse">
+                        <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                        <span class="text-xs font-bold tracking-wider uppercase">Live Room</span>
+                    </div>
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6">اتاق لایو ترید</h2>
+                    <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                        تحلیل زنده بازار، شکار موقعیت‌ها و مدیریت پوزیشن‌ها به صورت لایو.
+                    </p>
+                    <a href="https://t.me/TradeCenterPro" class="inline-flex items-center justify-center px-10 py-4 bg-parsGreen text-parsBlue font-bold text-lg rounded-xl hover:shadow-[0_0_40px_rgba(0,255,136,0.4)] transition transform hover:-translate-y-1">
+                        <i class="fas fa-microphone-alt ml-3"></i> ورود به اتاق
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="container mx-auto px-4 py-16">
+        <div class="flex items-center justify-between mb-10">
+            <h2 class="text-3xl font-bold">خدمات <span class="text-parsGreen">پارس ترید</span></h2>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass-box p-0 overflow-hidden group hover:border-parsGreen transition duration-300">
-                <div class="h-40 bg-gradient-to-r from-blue-900 to-slate-900 flex items-center justify-center">
-                    <i class="fas fa-user-graduate text-5xl text-white/50 group-hover:text-white transition"></i>
-                </div>
-                <div class="p-6">
+            
+            <div class="glass-box relative overflow-hidden group h-80">
+                <div class="p-6 h-full flex flex-col filter blur-sm opacity-50">
+                    <div class="h-32 bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-user-tie text-4xl text-white"></i>
+                    </div>
                     <h3 class="text-xl font-bold mb-2">منتورینگ خصوصی</h3>
-                    <p class="text-gray-400 text-sm mb-4">جلسات تک نفره رفع اشکال و تدوین استراتژی شخصی.</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-parsGreen font-bold">تماس بگیرید</span>
-                        <a href="login.html" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-parsGreen hover:text-parsBlue transition"><i class="fas fa-shopping-cart"></i></a>
-                    </div>
+                    <p class="text-gray-400 text-sm">جلسات یک به یک با منتورهای ارشد.</p>
+                </div>
+                <div class="absolute inset-0 coming-soon-overlay flex flex-col items-center justify-center z-20">
+                    <i class="fas fa-lock text-4xl text-gray-400 mb-3"></i>
+                    <span class="bg-parsGreen text-parsDark px-4 py-1 rounded-full text-xs font-bold">در آینده</span>
+                    <span class="text-gray-300 text-sm mt-2">Coming Soon</span>
                 </div>
             </div>
             
-            <div class="glass-box p-0 overflow-hidden group hover:border-parsGreen transition duration-300">
-                <div class="h-40 bg-gradient-to-r from-green-900 to-slate-900 flex items-center justify-center">
-                    <i class="fas fa-trophy text-5xl text-white/50 group-hover:text-white transition"></i>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">ورودی تورنمنت</h3>
-                    <p class="text-gray-400 text-sm mb-4">شرکت در لیگ معامله‌گران پارس ترید با جوایز ارزنده.</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-parsGreen font-bold">۵۰ تتر</span>
-                        <a href="login.html" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-parsGreen hover:text-parsBlue transition"><i class="fas fa-shopping-cart"></i></a>
+            <div class="glass-box relative overflow-hidden group h-80">
+                <div class="p-6 h-full flex flex-col filter blur-sm opacity-50">
+                    <div class="h-32 bg-yellow-900/30 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-trophy text-4xl text-yellow-500"></i>
                     </div>
+                    <h3 class="text-xl font-bold mb-2">لیگ تورنمنت</h3>
+                    <p class="text-gray-400 text-sm">رقابت با برترین‌ها برای جوایز دلاری.</p>
+                </div>
+                 <div class="absolute inset-0 coming-soon-overlay flex flex-col items-center justify-center z-20">
+                    <i class="fas fa-lock text-4xl text-gray-400 mb-3"></i>
+                    <span class="bg-parsGreen text-parsDark px-4 py-1 rounded-full text-xs font-bold">در آینده</span>
+                    <span class="text-gray-300 text-sm mt-2">Coming Soon</span>
                 </div>
             </div>
 
-             <div class="glass-box p-6 md:col-span-1 flex flex-col justify-center items-center text-center bg-parsGreen/5 border-dashed border-2 border-parsGreen/30">
-                <i class="fas fa-newspaper text-4xl text-parsGreen mb-4"></i>
-                <h3 class="text-xl font-bold mb-2">بلاگ آموزشی</h3>
-                <p class="text-gray-400 text-sm mb-4">مطالعه آخرین مقالات و تحلیل‌های تکنیکال (رایگان)</p>
-                <a href="#blog-page" class="text-white underline decoration-parsGreen decoration-2 underline-offset-4 hover:text-parsGreen transition">ورود به بلاگ</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="container mx-auto px-4 py-16 bg-black/20">
-        <h2 class="text-center text-3xl font-bold mb-10">تریدرها چه <span class="text-parsGreen">می‌گویند؟</span></h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass-box p-6">
-                <div class="flex text-parsGreen mb-3"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p class="text-gray-300 italic text-sm mb-4">"محیطی فوق‌العاده برای یادگیری. ابزارهای OF واقعا دید من رو به بازار تغییر داد."</p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gray-600 rounded-full"></div>
-                    <div class="text-sm">
-                        <div class="font-bold">علی رضایی</div>
-                        <div class="text-gray-500 text-xs">تریدر فارکس</div>
+             <div class="glass-box p-6 h-80 flex flex-col relative overflow-hidden hover:border-parsGreen transition duration-300 group">
+                <div class="absolute top-0 right-0 w-20 h-20 bg-parsGreen/20 rounded-bl-full -mr-4 -mt-4 transition group-hover:bg-parsGreen/30"></div>
+                <div class="flex-grow flex flex-col justify-center items-center text-center z-10">
+                    <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                        <i class="fas fa-newspaper text-2xl text-parsGreen"></i>
                     </div>
-                </div>
-            </div>
-            <div class="glass-box p-6">
-                <div class="flex text-parsGreen mb-3"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p class="text-gray-300 italic text-sm mb-4">"پشتیبانی و منتورینگ عالی بود. توی تورنمنت آخر تونستم رتبه بیارم."</p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gray-600 rounded-full"></div>
-                    <div class="text-sm">
-                        <div class="font-bold">سارا م.</div>
-                        <div class="text-gray-500 text-xs">اسکالپر طلا</div>
-                    </div>
-                </div>
-            </div>
-            <div class="glass-box p-6">
-                <div class="flex text-parsGreen mb-3"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
-                <p class="text-gray-300 italic text-sm mb-4">"بالاخره یه کامیونیتی پیدا شد که حرفه‌ای باشه و فقط سیگنال نفروشه."</p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gray-600 rounded-full"></div>
-                    <div class="text-sm">
-                        <div class="font-bold">امیرحسین</div>
-                        <div class="text-gray-500 text-xs">کریپتو تریدر</div>
-                    </div>
+                    <h3 class="text-xl font-bold mb-2">بلاگ و تحلیل‌ها</h3>
+                    <p class="text-gray-400 text-sm mb-6 px-4">جدیدترین مقالات آموزشی و تحلیل‌های تکنیکال روزانه را اینجا بخوانید.</p>
+                    <a href="#blog-page" class="px-6 py-2 border border-white/20 rounded-full hover:bg-parsGreen hover:text-parsDark hover:border-parsGreen transition text-sm">ورود به بلاگ</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="border-t border-white/10 bg-black/40 backdrop-blur-lg mt-10">
-        <div class="container mx-auto px-4 py-10">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="md:col-span-2">
-                    <h3 class="text-2xl font-bold text-white mb-4">پارس <span class="text-parsGreen">ترید</span></h3>
-                    <p class="text-gray-400 text-sm max-w-sm">
-                        اولین و بزرگترین کامیونیتی تخصصی ترید با رویکرد نوین. هدف ما ارتقای سطح دانش معامله‌گری در ایران است.
-                    </p>
-                    <div class="flex gap-4 mt-6">
-                        <a href="https://t.me/TradeCenterPro" class="w-10 h-10 rounded glass-box flex items-center justify-center hover:bg-parsGreen hover:text-parsBlue transition"><i class="fab fa-telegram"></i></a>
-                        <a href="#" class="w-10 h-10 rounded glass-box flex items-center justify-center hover:bg-pink-600 transition"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="w-10 h-10 rounded glass-box flex items-center justify-center hover:bg-red-600 transition"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
+    <footer class="border-t border-white/5 bg-black/60 backdrop-blur-xl mt-10 relative">
+        <div class="container mx-auto px-4 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                 
-                <div>
-                    <h4 class="font-bold text-white mb-4 border-b-2 border-parsGreen inline-block">دسترسی سریع</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-parsGreen">خانه</a></li>
-                        <li><a href="#blog" class="hover:text-parsGreen">بلاگ</a></li>
-                        <li><a href="#store" class="hover:text-parsGreen">فروشگاه</a></li>
-                        <li><a href="login.html" class="hover:text-parsGreen">ورود / عضویت</a></li>
-                    </ul>
+                <div class="flex items-center gap-3">
+                    <img src="logo3.jpg" class="w-10 h-10 rounded-full grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition" alt="Footer Logo">
+                    <span class="font-bold text-lg text-gray-400">Pars Trade</span>
                 </div>
 
-                <div>
-                    <h4 class="font-bold text-white mb-4 border-b-2 border-parsGreen inline-block">تیم ما</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li class="flex items-center gap-2"><i class="fas fa-crown text-yellow-500"></i> Owner: <span class="text-white">@Parsfarsi</span></li>
-                        <li class="flex items-center gap-2"><i class="fas fa-code text-blue-400"></i> Dev: <span class="text-white">@Behrise</span></li>
-                    </ul>
+                <div class="flex gap-6 text-2xl">
+                    <a href="https://t.me/TradeCenterPro" class="text-gray-500 hover:text-blue-400 hover:scale-110 transition"><i class="fab fa-telegram"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-pink-500 hover:scale-110 transition"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-red-500 hover:scale-110 transition"><i class="fab fa-youtube"></i></a>
+                </div>
+
+                <div class="text-sm text-gray-500 flex flex-col md:flex-row gap-4 items-center">
+                    <span>Owner: <span class="text-gray-300">@Parsfarsi</span></span>
+                    <span class="hidden md:block">|</span>
+                    <span>Dev: <span class="text-gray-300">@Behrise</span></span>
                 </div>
             </div>
-            
-            <div class="text-center text-gray-600 text-xs mt-10 pt-6 border-t border-white/5">
-                &copy; 2023 Pars Trade Community. All rights reserved.
+            <div class="text-center text-gray-700 text-xs mt-8">
+                Designed for Professional Traders. 2023 ©
             </div>
         </div>
     </footer>
 
 </body>
 </html>
+
 
