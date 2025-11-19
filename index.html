@@ -13,11 +13,9 @@
             theme: {
                 extend: {
                     colors: {
-                        parsBlue: '#1e1e8f', // رنگ آبی لوگو
-                        parsGreen: '#00ff88', // رنگ سبز لوگو
-                        parsDark: '#05051a', // آبی تیره عمیق برای پس‌زمینه
-                        parsGlassBg: 'rgba(30, 30, 143, 0.2)', // پس‌زمینه شیشه‌ای با رنگ آبی اصلی
-                        parsGlassBorder: 'rgba(0, 255, 136, 0.2)', // حاشیه شیشه‌ای با رنگ سبز اصلی
+                        parsBlue: '#1e1e8f', 
+                        parsGreen: '#00ff88', 
+                        parsDark: '#05051a', 
                     },
                     fontFamily: {
                         sans: ['Vazirmatn', 'sans-serif'],
@@ -25,7 +23,8 @@
                     animation: {
                         'blob': 'blob 7s infinite',
                         'float': 'float 6s ease-in-out infinite',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pulse-neon': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'border-pulse': 'border-pulse 4s infinite',
                     },
                     keyframes: {
                         blob: {
@@ -40,7 +39,11 @@
                         },
                         pulse: {
                             '0%, 100%': { opacity: 1 },
-                            '50%': { opacity: .5 },
+                            '50%': { opacity: .7 },
+                        },
+                        'border-pulse': {
+                            '0%, 100%': { borderColor: 'rgba(0, 255, 136, 0.4)' },
+                            '50%': { borderColor: 'rgba(0, 255, 136, 0.8)' },
                         }
                     }
                 }
@@ -50,57 +53,60 @@
     
     <style>
         body {
-            background-color: #05051a; /* آبی تیره عمیق‌تر برای پس‌زمینه */
-            background-image: 
-                radial-gradient(at 0% 0%, #1e1e8f 0%, transparent 40%), /* گوشه بالا چپ آبی لوگو */
-                radial-gradient(at 100% 100%, #00ff88 0%, transparent 40%); /* گوشه پایین راست سبز لوگو */
-            background-attachment: fixed;
+            /* پس‌زمینه ساده‌تر برای رفع مشکل لگ اسکرول */
+            background-color: #05051a; 
+            background-image: linear-gradient(135deg, #05051a 0%, #1e1e8f 100%);
+            background-attachment: scroll; /* رفع فیکس بودن */
             color: white;
             overflow-x: hidden;
         }
         
         .glass-box {
-            background: linear-gradient(145deg, rgba(30,30,143,0.3) 0%, rgba(30,30,143,0.1) 100%); /* گرادینت از آبی لوگو */
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 255, 136, 0.2); /* حاشیه سبز لوگو */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            /* گلس‌مورفیسم با عمق بیشتر */
+            background: linear-gradient(145deg, rgba(30,30,143,0.4) 0%, rgba(30,30,143,0.1) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5); /* سایه عمیق‌تر */
             border-radius: 16px;
         }
 
         .glass-nav {
-            background: rgba(5, 5, 26, 0.8); /* آبی تیره برای نوبار */
+            background: rgba(5, 5, 26, 0.9); 
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(0, 255, 136, 0.3); /* حاشیه سبز */
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
         }
 
         .text-glow-green {
-            text-shadow: 0 0 15px rgba(0, 255, 136, 0.7);
+            text-shadow: 0 0 18px rgba(0, 255, 136, 0.8), 0 0 30px rgba(0, 255, 136, 0.4); /* شدت بیشتر نئون */
         }
         
-        .coming-soon-overlay {
-            background: rgba(5, 5, 26, 0.8); /* از رنگ پس زمینه اصلی */
-            backdrop-filter: blur(6px); 
-            border: 1px dashed rgba(0, 255, 136, 0.5);
-            border-radius: 16px;
-        }
-        .coming-soon-lock {
-            color: rgba(0, 255, 136, 0.7); /* رنگ قفل سبز */
-        }
-
         .object-glow {
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
         }
 
         .border-glow-hover:hover {
             border-color: #00ff88;
-            box-shadow: 0 0 25px rgba(0, 255, 136, 0.5);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.7); /* بزرگنمایی سایه */
+            transform: scale(1.02);
         }
 
-        .gradient-text {
-            background: linear-gradient(90deg, #00ff88, #5affc2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .object-3d-hover:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) translateZ(10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .coming-soon-lock {
+            color: #00ff88;
+        }
+
+        /* لایه‌های داخلی گرافیک لوگو در هیرو */
+        .logo-ring-1 {
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            animation: pulse-neon 4s ease-in-out infinite;
+        }
+        .logo-ring-2 {
+            border: 1px solid rgba(30, 30, 143, 0.5);
         }
     </style>
 </head>
@@ -155,30 +161,34 @@
         <div class="md:w-1/2 space-y-8 text-center md:text-right z-10">
             <h1 class="text-5xl md:text-7xl font-black leading-tight drop-shadow-2xl">
                 آینده ترید <br>
-                در دستان <span class="gradient-text text-glow-green">شماست</span>
+                در دستان <span class="text-parsGreen text-glow-green">شماست</span>
             </h1>
             <p class="text-gray-300 text-lg leading-relaxed glass-box p-6 inline-block border-r-4 border-parsGreen">
                 به بزرگترین کامیونیتی ترید ایران خوش آمدید. ابزارهای حرفه‌ای، منتورینگ تخصصی و تحلیل‌های لحظه‌ای در پارس ترید.
-                <br>
-                <span class="text-sm text-parsGreen mt-3 block font-mono opacity-80">> Join the revolution_</span>
             </p>
-            <div class="flex gap-4 justify-center md:justify-start pt-4">
-                <a href="signup.html" class="px-8 py-4 bg-parsGreen text-parsDark font-bold rounded-2xl hover:scale-105 hover:shadow-[0_0_30px_rgba(0,255,136,0.5)] transition-all duration-300">
+            <div class="mt-4 flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center">
+                <a href="signup.html" class="px-8 py-4 bg-parsGreen text-parsDark font-bold rounded-2xl hover:scale-105 hover:shadow-[0_0_40px_rgba(0,255,136,0.7)] transition-all duration-300 object-glow">
                     شروع رایگان
                 </a>
-                <a href="https://t.me/TradeCenterPro" class="px-8 py-4 glass-box hover:bg-white/10 transition font-bold rounded-2xl flex items-center gap-2 group">
-                    <i class="fab fa-telegram text-2xl text-parsGreen group-hover:text-white transition"></i>
-                </a>
+                <span class="text-sm text-gray-400 flex items-center gap-2">
+                    <i class="fas fa-users text-parsGreen"></i>
+                    بیش از **9.5K** عضو فعال
+                </span>
             </div>
         </div>
         
         <div class="md:w-1/2 flex justify-center relative animate-float">
-             <div class="glass-box p-4 w-full max-w-md aspect-square flex flex-col items-center justify-center relative overflow-hidden group border-glow-hover">
-                <div class="absolute inset-0 bg-parsGreen/10 opacity-50 group-hover:opacity-80 transition duration-500"></div>
+             <div class="glass-box p-4 w-full max-w-md aspect-square flex flex-col items-center justify-center relative overflow-hidden group border-glow-hover transition-all duration-500">
+                <div class="absolute inset-0 bg-parsGreen/5 opacity-50"></div>
+                
+                <div class="absolute inset-10 rounded-full logo-ring-1"></div>
+                <div class="absolute inset-5 rounded-full logo-ring-2"></div>
+                
                 <img src="logo3.jpg" class="w-48 h-48 object-contain object-glow relative z-10 rounded-full" alt="Hero Logo">
+                
                 <div class="mt-6 flex gap-4">
-                    <div class="bg-parsBlue/50 px-4 py-2 rounded text-xs text-parsGreen border border-parsGreen/30">Winrate: +65%</div>
-                    <div class="bg-parsBlue/50 px-4 py-2 rounded text-xs text-white border border-white/30">Members: 5K+</div>
+                    <div class="bg-parsBlue/50 px-4 py-2 rounded text-xs text-parsGreen border border-parsGreen/30">Community</div>
+                    <div class="bg-parsBlue/50 px-4 py-2 rounded text-xs text-white border border-white/30">Pro Tools</div>
                 </div>
              </div>
         </div>
@@ -191,44 +201,45 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="glass-box p-6 group hover:border-glow-hover transition duration-300">
+            
+            <div class="glass-box p-6 group hover:border-glow-hover transition duration-300 object-3d-hover">
                 <div class="flex justify-between items-start">
                     <div>
                         <div class="text-gray-400 text-xs mb-1">سشن مارکت</div>
                         <div class="text-2xl font-bold text-white">London</div>
                     </div>
-                    <i class="fas fa-clock text-2xl text-parsGreen group-hover:rotate-12 transition"></i>
+                    <i class="fas fa-clock text-2xl text-parsGreen group-hover:scale-125 transition"></i>
                 </div>
                 <div class="mt-4 flex items-center gap-2 text-xs text-parsGreen bg-parsGreen/10 px-2 py-1 rounded w-max">
-                    <span class="w-2 h-2 bg-parsGreen rounded-full animate-pulse-slow"></span> باز است
+                    <span class="w-2 h-2 bg-parsGreen rounded-full animate-pulse-neon"></span> باز است
                 </div>
             </div>
 
-            <div class="glass-box p-6 group hover:border-glow-hover transition duration-300">
+            <div class="glass-box p-6 group hover:border-glow-hover transition duration-300 object-3d-hover">
                 <div class="flex justify-between items-start">
                     <div>
                         <div class="text-gray-400 text-xs mb-1">تایمر کندل (H1)</div>
                         <div class="text-2xl font-bold font-mono text-white">14:35</div>
                     </div>
-                    <i class="fas fa-hourglass-half text-2xl text-white/70 group-hover:spin transition"></i>
+                    <i class="fas fa-hourglass-half text-2xl text-white/70 group-hover:rotate-180 transition"></i>
                 </div>
                 <div class="w-full bg-parsBlue/50 h-1.5 rounded-full mt-5 overflow-hidden">
                     <div class="bg-parsGreen h-full w-[45%]"></div>
                 </div>
             </div>
 
-            <div class="glass-box p-6 group hover:border-glow-hover transition duration-300">
+            <div class="glass-box p-6 group hover:border-glow-hover transition duration-300 object-3d-hover">
                 <div class="flex justify-between items-start">
                     <div>
                         <div class="text-gray-400 text-xs mb-1">خبر مهم بعدی</div>
                         <div class="text-lg font-bold text-white/90">CPI Data</div>
                     </div>
-                    <i class="fas fa-bullhorn text-2xl text-parsGreen group-hover:scale-110 transition"></i>
+                    <i class="fas fa-bullhorn text-2xl text-parsGreen group-hover:translate-x-1 transition"></i>
                 </div>
                 <div class="mt-3 text-xs text-gray-400">تا 35 دقیقه دیگر</div>
             </div>
 
-            <div class="glass-box p-6 group hover:border-glow-hover transition duration-300">
+            <div class="glass-box p-6 group hover:border-glow-hover transition duration-300 object-3d-hover">
                 <div class="flex justify-between items-start">
                     <div>
                         <div class="text-gray-400 text-xs mb-1">وضعیت نوسان</div>
@@ -242,44 +253,32 @@
     </section>
 
     <section class="container mx-auto px-4 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <a href="login.html" class="block group perspective-1000">
-                <div class="glass-box p-8 h-full relative overflow-hidden hover:transform hover:-translate-y-2 transition duration-500 border-glow-hover">
-                    <div class="absolute inset-0 bg-parsGreen/10 opacity-0 group-hover:opacity-100 transition"></div>
-                    <div class="relative z-10 flex flex-col h-full">
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="p-4 bg-parsGreen/10 rounded-2xl text-parsGreen text-3xl">
-                                <i class="fas fa-book-journal-whills"></i>
-                            </div>
-                            <i class="fas fa-lock text-white/50"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">ژورنال ترید (Trader Tools)</h3>
-                        <p class="text-gray-400 text-sm mb-4">قدرتمندترین ابزار برای بررسی عملکرد معاملاتی شما.</p>
-                        <span class="text-parsGreen text-sm font-bold mt-auto flex items-center gap-2">
-                            ورود به پنل <i class="fas fa-arrow-left group-hover:-translate-x-2 transition"></i>
-                        </span>
-                    </div>
-                </div>
-            </a>
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-bold">زمان‌بندی <span class="text-parsGreen">حرفه‌ای</span></h2>
+            <p class="text-gray-400 mt-2">مهمترین رویدادهای پیش رو و ساعت سشن‌ها</p>
+        </div>
 
-            <a href="login.html" class="block group">
-                <div class="glass-box p-8 h-full relative overflow-hidden hover:transform hover:-translate-y-2 transition duration-500 border-glow-hover">
-                    <div class="absolute inset-0 bg-parsBlue/20 opacity-0 group-hover:opacity-100 transition"></div>
-                    <div class="relative z-10 flex flex-col h-full">
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="p-4 bg-parsBlue/10 rounded-2xl text-parsGreen text-3xl">
-                                <i class="fas fa-chart-area"></i>
-                            </div>
-                            <i class="fas fa-lock text-white/50"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">ابزارهای OF و چارت</h3>
-                        <p class="text-gray-400 text-sm mb-4">دسترسی به والیوم پروفایل، اوردر فلو و چارت‌های ویژه.</p>
-                        <span class="text-parsGreen text-sm font-bold mt-auto flex items-center gap-2">
-                            ورود به پنل <i class="fas fa-arrow-left group-hover:-translate-x-2 transition"></i>
-                        </span>
+        <div class="glass-box p-8 max-w-4xl mx-auto border-glow-hover transition-all duration-500">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                
+                <div class="flex items-center gap-4 border-l border-parsGreen/50 pl-6">
+                    <div class="text-5xl text-parsGreen animate-pulse-neon">
+                        <i class="fas fa-satellite-dish"></i>
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold">ساعت Market - GMT</div>
+                        <div class="text-3xl font-mono text-white">10:45:30</div>
                     </div>
                 </div>
-            </a>
+
+                <div class="text-center md:text-right">
+                    <div class="text-parsGreen font-bold text-sm mb-1">شروع سشن نیویورک</div>
+                    <div class="text-4xl font-extrabold font-mono text-white tracking-wider bg-parsBlue/50 p-2 rounded-lg">
+                        02:15:30
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">زمان باقی مانده تا باز شدن</p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -292,23 +291,23 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="glass-box p-8 text-center hover:bg-parsGreen/10 transition duration-500 border-t-4 border-parsGreen border-glow-hover">
+                <div class="glass-box p-8 text-center hover:bg-parsGreen/10 transition duration-500 border-t-4 border-parsGreen border-glow-hover object-3d-hover">
                     <div class="w-20 h-20 mx-auto bg-parsDark rounded-full flex items-center justify-center mb-6 object-glow">
-                        <i class="fas fa-users text-3xl text-parsGreen"></i>
+                        <i class="fas fa-users text-3xl text-parsGreen animate-float"></i>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">کامیونیتی فعال</h3>
                     <p class="text-gray-400 text-sm">ارتباط مستقیم با برترین تریدرهای ایران در فضایی سالم.</p>
                 </div>
-                <div class="glass-box p-8 text-center hover:bg-parsBlue/10 transition duration-500 border-t-4 border-parsBlue border-glow-hover">
+                <div class="glass-box p-8 text-center hover:bg-parsBlue/10 transition duration-500 border-t-4 border-parsBlue border-glow-hover object-3d-hover">
                     <div class="w-20 h-20 mx-auto bg-parsDark rounded-full flex items-center justify-center mb-6 object-glow">
-                        <i class="fas fa-tachometer-alt text-3xl text-parsGreen"></i>
+                        <i class="fas fa-tachometer-alt text-3xl text-parsGreen animate-float animation-delay-500"></i>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">سرعت و دقت</h3>
                     <p class="text-gray-400 text-sm">دیتای لول 2 و ابزارهای بدون تاخیر برای اسکالپرها.</p>
                 </div>
-                <div class="glass-box p-8 text-center hover:bg-parsGreen/10 transition duration-500 border-t-4 border-parsGreen border-glow-hover">
+                <div class="glass-box p-8 text-center hover:bg-parsGreen/10 transition duration-500 border-t-4 border-parsGreen border-glow-hover object-3d-hover">
                     <div class="w-20 h-20 mx-auto bg-parsDark rounded-full flex items-center justify-center mb-6 object-glow">
-                        <i class="fas fa-graduation-cap text-3xl text-parsGreen"></i>
+                        <i class="fas fa-graduation-cap text-3xl text-parsGreen animate-float animation-delay-1000"></i>
                     </div>
                     <h3 class="text-xl font-bold text-white mb-3">آموزش نوین</h3>
                     <p class="text-gray-400 text-sm">دوری از مباحث تکراری و تمرکز بر روانشناسی و جریان سفارشات.</p>
@@ -321,7 +320,7 @@
         <div class="glass-box p-1 rounded-3xl bg-gradient-to-r from-parsGreen to-parsBlue object-glow">
             <div class="bg-parsDark rounded-[22px] p-10 md:p-16 text-center relative overflow-hidden">
                 <div class="relative z-10">
-                    <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-parsGreen/10 text-parsGreen border border-parsGreen/20 mb-6 animate-pulse-slow">
+                    <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-parsGreen/10 text-parsGreen border border-parsGreen/20 mb-6 animate-pulse-neon">
                         <span class="w-2 h-2 bg-parsGreen rounded-full"></span>
                         <span class="text-xs font-bold tracking-wider uppercase">Live Room</span>
                     </div>
@@ -329,7 +328,7 @@
                     <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
                         تحلیل زنده بازار، شکار موقعیت‌ها و مدیریت پوزیشن‌ها به صورت لایو.
                     </p>
-                    <a href="https://t.me/TradeCenterPro" class="inline-flex items-center justify-center px-10 py-4 bg-parsGreen text-parsDark font-bold text-lg rounded-xl hover:shadow-[0_0_40px_rgba(0,255,136,0.4)] transition transform hover:-translate-y-1">
+                    <a href="https://t.me/TradeCenterPro" class="inline-flex items-center justify-center px-10 py-4 bg-parsGreen text-parsDark font-bold text-lg rounded-xl hover:shadow-[0_0_40px_rgba(0,255,136,0.8)] transition transform hover:-translate-y-1 object-glow">
                         <i class="fas fa-microphone-alt ml-3"></i> ورود به اتاق
                     </a>
                 </div>
@@ -344,7 +343,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <div class="glass-box relative overflow-hidden group h-80 border-glow-hover">
+            <div class="glass-box relative overflow-hidden group h-80 border-glow-hover transition-all duration-300">
                 <div class="p-6 h-full flex flex-col filter blur-sm opacity-50">
                     <div class="h-32 bg-parsBlue/30 rounded-xl flex items-center justify-center mb-4">
                         <i class="fas fa-user-tie text-4xl text-white"></i>
@@ -354,12 +353,12 @@
                 </div>
                 <div class="absolute inset-0 coming-soon-overlay flex flex-col items-center justify-center z-20">
                     <i class="fas fa-lock text-4xl coming-soon-lock mb-3"></i>
-                    <span class="bg-parsGreen text-parsDark px-4 py-1 rounded-full text-xs font-bold">در آینده</span>
+                    <span class="bg-parsGreen text-parsDark px-4 py-1 rounded-full text-xs font-bold animate-pulse-neon">در آینده</span>
                     <span class="text-gray-300 text-sm mt-2">Coming Soon</span>
                 </div>
             </div>
             
-            <div class="glass-box relative overflow-hidden group h-80 border-glow-hover">
+            <div class="glass-box relative overflow-hidden group h-80 border-glow-hover transition-all duration-300">
                 <div class="p-6 h-full flex flex-col filter blur-sm opacity-50">
                     <div class="h-32 bg-parsGreen/30 rounded-xl flex items-center justify-center mb-4">
                         <i class="fas fa-trophy text-4xl text-white"></i>
@@ -369,12 +368,12 @@
                 </div>
                  <div class="absolute inset-0 coming-soon-overlay flex flex-col items-center justify-center z-20">
                     <i class="fas fa-lock text-4xl coming-soon-lock mb-3"></i>
-                    <span class="bg-parsGreen text-parsDark px-4 py-1 rounded-full text-xs font-bold">در آینده</span>
+                    <span class="bg-parsGreen text-parsDark px-4 py-1 rounded-full text-xs font-bold animate-pulse-neon">در آینده</span>
                     <span class="text-gray-300 text-sm mt-2">Coming Soon</span>
                 </div>
             </div>
 
-             <div class="glass-box p-6 h-80 flex flex-col relative overflow-hidden hover:border-parsGreen transition duration-300 group border-glow-hover">
+             <div class="glass-box p-6 h-80 flex flex-col relative overflow-hidden hover:border-parsGreen transition duration-300 group border-glow-hover object-3d-hover">
                 <div class="absolute top-0 right-0 w-20 h-20 bg-parsGreen/20 rounded-bl-full -mr-4 -mt-4 transition group-hover:bg-parsGreen/30"></div>
                 <div class="flex-grow flex flex-col justify-center items-center text-center z-10">
                     <div class="w-16 h-16 bg-parsBlue/50 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition object-glow">
@@ -387,6 +386,10 @@
             </div>
         </div>
     </section>
+
+    <section class="container mx-auto px-4 py-16 bg-black/20">
+        </section>
+
 
     <footer class="border-t border-parsGreen/10 bg-parsDark/60 backdrop-blur-xl mt-10 relative">
         <div class="container mx-auto px-4 py-12">
@@ -417,6 +420,7 @@
 
 </body>
 </html>
+
 
 
 
