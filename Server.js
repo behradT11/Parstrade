@@ -1,53 +1,97 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer');
+
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
-app.use(cors()); // برای اجازه دادن به فرانت‌اند
+// میان‌افزارها (Middleware)
+app.use(cors()); // اجازه دسترسی فرانت به بک
+app.use(bodyParser.json());
 
-// دیتابیس فرضی اخبار (چون API واقعی نیاز به پول دارد، این را شبیه‌سازی می‌کنیم اما منطقی)
-const newsData = [
-    { title: "CPI Data Release", impact: "HIGH IMPACT", color: "text-red-500" },
-    { title: "Fed Chair Powell Speaks", impact: "HIGH IMPACT", color: "text-red-500" },
-    { title: "Unemployment Claims", impact: "MEDIUM IMPACT", color: "text-orange-400" },
-    { title: "Market Sentiment: Bullish", impact: "LOW IMPACT", color: "text-green-400" }
-];
+// دیتابیس موقت (در حافظه رم)
+const otpStore = {};
 
-app.get('/api/market-data', (req, res) => {
-    const now = new Date();
+// تنظیمات ارسال ایمیل (اختیاری - اگر تنظیم نکنید کد فقط در کنسول چاپ می‌شود)
+// برای فعال سازی واقعی باید از Gmail App Password استفاده کنید
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'your-email@gmail.com', // ایمیل خود را اینجا بگذارید
+        pass: 'your-app-password'     // رمز عبور اپلیکیشن گوگل
+    }
+});
+
+// روت 1: درخواست کد OTP
+app.post('/send-otp', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ message: 'ایمیل الزامی است' });
+    }
+
+    // تولید کد 4 رقمی رندوم
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
     
-    // 1. محاسبه زمان GMT
-    const hours = now.getUTCHours();
-    const minutes = now.getUTCMinutes();
-    const seconds = now.getUTCSeconds();
-    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    // ذخیره در دیتابیس موقت (با انقضای 2 دقیقه)
+    otpStore[email] = {
+        code: otp,
+        expires: Date.now() + 120000 // 2 دقیقه
+    };
 
-    // 2. منطق تشخیص سشن (ساده شده)
-    let session = "Sydney / Tokyo";
-    if (hours >= 8 && hours < 13) session = "London (Open)";
-    else if (hours >= 13 && hours < 17) session = "London / New York"; // همپوشانی
-    else if (hours >= 17 && hours < 22) session = "New York (Open)";
-    else session = "Asian Session";
+    console.log(`--------------------------------`);
+    console.log(`✅ OTP CODE FOR [${email}]: ${otp}`);
+    console.log(`--------------------------------`);
 
-    // 3. محاسبه تایمر کندل یک ساعته (H1)
-    // چقدر مانده تا ساعت بعدی؟
-    const minutesLeft = 59 - minutes;
-    const secondsLeft = 59 - seconds;
-    const formattedTimer = `${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
-
-    // 4. خبر تصادفی (برای نمایش کارکرد)
-    // در واقعیت اینجا باید به یک API وصل شوید
-    const randomNews = newsData[Math.floor((Math.random() * newsData.length))]; // فقط برای دمو هر بار یکی را نشان میدهد، میتوانید ثابت کنید
-
-    res.json({
-        gmtTime: formattedTime,
-        session: session,
-        timer: formattedTimer,
-        news: newsData[0] // فعلا اولی را ثابت نشان میدهد
-    });
+    // تلاش برای ارسال ایمیل (اگر کانفیگ نشده باشد ارور نمی‌دهد تا برنامه متوقف نشود)
+    try {
+        /* فعال‌سازی این بخش نیاز به کانفیگ واقعی ایمیل دارد */
+        /*
+        await transporter.sendMail({
+            from: '"Pars Trade" <noreply@parstrade.com>',
+            to: email,
+            subject: 'کد ورود به پارس ترید',
+            text: `کد ورود شما: ${otp}`
+        });
+        */
+        res.json({ message: 'کد ارسال شد' });
+    } catch (error) {
+        console.log("Email Error (Ignore if local):", error.message);
+        // حتی اگر ایمیل نرود، چون در کنسول چاپ شده، به کاربر میگوییم موفقیت آمیز بود
+        res.json({ message: 'کد ساخته شد (Check Console)' });
+    }
 });
 
-app.listen(port, () => {
-    console.log(`Pars Trade Backend running at http://localhost:${port}`);
+// روت 2: تایید کد OTP
+app.post('/verify-otp', (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!otpStore[email]) {
+        return res.status(400).json({ message: 'کدی برای این ایمیل یافت نشد یا منقضی شده است' });
+    }
+
+    const data = otpStore[email];
+
+    if (Date.now() > data.expires) {
+        delete otpStore[email];
+        return res.status(400).json({ message: 'کد منقضی شده است' });
+    }
+
+    if (data.code === otp) {
+        // کد درست است
+        delete otpStore[email]; // پاک کردن کد پس از استفاده (یکبار مصرف)
+        return res.json({ 
+            message: 'ورود موفقیت آمیز', 
+            token: 'fake-jwt-token-123456' // اینجا توکن واقعی باید فرستاده شود
+        });
+    } else {
+        return res.status(400).json({ message: 'کد اشتباه است' });
+    }
 });
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`waiting for requests...`);
+});
+
