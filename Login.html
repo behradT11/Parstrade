@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود به پارس ترید | Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        parsBlue: '#1e1e8f',
+                        parsGreen: '#00ff88',
+                        parsDark: '#0f0f3d',
+                    },
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #050511 0%, #0f0f3d 100%);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .input-group input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            outline: none;
+        }
+
+        /* لودینگ */
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-left-color: #00ff88;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .blob {
+            position: absolute;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob bg-parsBlue/60 w-96 h-96 rounded-full top-0 right-0 animate-float"></div>
+    <div class="blob bg-parsGreen/40 w-80 h-80 rounded-full bottom-0 left-0 animate-float" style="animation-delay: 2s;"></div>
+    <div class="blob bg-purple-600/30 w-64 h-64 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 animate-pulse-slow"></div>
+
+    <div class="w-full max-w-md px-4">
+        <div class="glass-panel rounded-3xl p-8 md:p-10 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-parsGreen to-transparent opacity-50"></div>
+
+            <div class="text-center mb-8">
+                <img src="logo3.jpg" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-parsGreen shadow-[0_0_20px_rgba(0,255,136,0.3)] object-cover">
+                <h2 class="text-2xl font-bold mb-1">خوش آمدید به <span class="text-parsGreen">پارس ترید</span></h2>
+                <p class="text-gray-400 text-sm">دروازه ورود به بازارهای جهانی</p>
+            </div>
+
+            <div id="step-1">
+                <div class="input-group mb-6">
+                    <label class="block text-gray-300 text-sm mb-2 font-bold">ایمیل خود را وارد کنید</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute right-4 top-4 text-gray-500"></i>
+                        <input type="email" id="emailInput" placeholder="name@example.com" class="w-full py-3 pr-12 pl-4 rounded-xl text-white placeholder-gray-600 text-left" dir="ltr">
+                    </div>
+                </div>
+                <button onclick="sendOtp()" class="w-full bg-parsGreen text-parsDark font-black py-4 rounded-xl hover:shadow-[0_0_20px_rgba(0,255,136,0.4)] transition transform hover:-translate-y-1 flex justify-center items-center gap-2">
+                    <span>دریافت کد تایید</span>
+                    <div class="loader" id="btnLoader1"></div>
+                </button>
+            </div>
+
+            <div id="step-2" class="hidden">
+                <div class="text-center mb-6">
+                    <p class="text-gray-300 text-sm">کد ارسال شده به <span id="userEmailDisplay" class="text-parsGreen font-bold"></span> را وارد کنید</p>
+                    <button onclick="backToStep1()" class="text-xs text-gray-500 mt-2 hover:text-white underline">تغییر ایمیل</button>
+                </div>
+                
+                <div class="flex justify-center gap-2 mb-6" dir="ltr">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-14 text-center text-2xl font-bold rounded-lg bg-white/5 border border-white/10 focus:border-parsGreen focus:outline-none transition" oninput="focusNext(this)">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-14 text-center text-2xl font-bold rounded-lg bg-white/5 border border-white/10 focus:border-parsGreen focus:outline-none transition" oninput="focusNext(this)">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-14 text-center text-2xl font-bold rounded-lg bg-white/5 border border-white/10 focus:border-parsGreen focus:outline-none transition" oninput="focusNext(this)">
+                    <input type="text" maxlength="1" class="otp-input w-12 h-14 text-center text-2xl font-bold rounded-lg bg-white/5 border border-white/10 focus:border-parsGreen focus:outline-none transition" oninput="focusNext(this)">
+                </div>
+
+                <button onclick="verifyOtp()" class="w-full bg-parsGreen text-parsDark font-black py-4 rounded-xl hover:shadow-[0_0_20px_rgba(0,255,136,0.4)] transition transform hover:-translate-y-1 flex justify-center items-center gap-2">
+                    <span>ورود به حساب</span>
+                    <div class="loader" id="btnLoader2"></div>
+                </button>
+                
+                <div class="text-center mt-4">
+                    <p class="text-xs text-gray-500">ارسال مجدد کد در <span class="text-white">01:59</span></p>
+                </div>
+            </div>
+
+            <div id="messageBox" class="hidden mt-4 p-3 rounded-lg text-center text-sm font-bold"></div>
+
+        </div>
+        
+        <div class="text-center mt-6 text-gray-500 text-xs">
+            &copy; 2025 Pars Trade Security System
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000'; // آدرس بک‌اند
+
+        // هندل کردن اینپوت‌های OTP
+        function focusNext(element) {
+            if (element.value.length === 1) {
+                const nextElement = element.nextElementSibling;
+                if (nextElement) nextElement.focus();
+            }
+        }
+
+        async function sendOtp() {
+            const email = document.getElementById('emailInput').value;
+            const loader = document.getElementById('btnLoader1');
+            const msgBox = document.getElementById('messageBox');
+            
+            if(!email || !email.includes('@')) {
+                showMsg('لطفا ایمیل معتبر وارد کنید', 'error');
+                return;
+            }
+
+            loader.style.display = 'inline-block';
+            
+            try {
+                const response = await fetch(`${API_URL}/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('step-1').classList.add('hidden');
+                    document.getElementById('step-2').classList.remove('hidden');
+                    document.getElementById('userEmailDisplay').innerText = email;
+                    showMsg('کد تایید ارسال شد (کنسول سرور را چک کنید)', 'success');
+                } else {
+                    showMsg(data.message || 'خطا در ارسال', 'error');
+                }
+            } catch (error) {
+                showMsg('خطا در ارتباط با سرور. آیا فایل server.js را اجرا کرده‌اید؟', 'error');
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        async function verifyOtp() {
+            const email = document.getElementById('emailInput').value;
+            const inputs = document.querySelectorAll('.otp-input');
+            let otpCode = '';
+            inputs.forEach(input => otpCode += input.value);
+
+            const loader = document.getElementById('btnLoader2');
+            
+            if (otpCode.length < 4) {
+                showMsg('لطفا کد ۴ رقمی را کامل وارد کنید', 'error');
+                return;
+            }
+
+            loader.style.display = 'inline-block';
+
+            try {
+                const response = await fetch(`${API_URL}/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp: otpCode })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMsg('ورود موفقیت آمیز! در حال انتقال...', 'success');
+                    setTimeout(() => {
+                        // اینجا به صفحه اصلی یا داشبورد هدایت می‌شود
+                        window.location.href = 'index.html'; 
+                    }, 1500);
+                } else {
+                    showMsg(data.message || 'کد اشتباه است', 'error');
+                }
+            } catch (error) {
+                showMsg('خطا در ارتباط با سرور', 'error');
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        function backToStep1() {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+            document.getElementById('messageBox').classList.add('hidden');
+        }
+
+        function showMsg(text, type) {
+            const box = document.getElementById('messageBox');
+            box.innerText = text;
+            box.classList.remove('hidden', 'bg-red-500/20', 'text-red-400', 'bg-green-500/20', 'text-green-400');
+            
+            if (type === 'error') {
+                box.classList.add('bg-red-500/20', 'text-red-400');
+            } else {
+                box.classList.add('bg-green-500/20', 'text-green-400');
+            }
+        }
+    </script>
+</body>
+</html>
