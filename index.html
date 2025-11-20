@@ -1,4 +1,4 @@
-چ<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -59,6 +59,20 @@
             border-color: #00ff88;
         }
 
+        /* استایل برای بخش‌های قفل شده */
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+
         /* دایره‌های گرادینت پشت زمینه برای گرافیک بالا */
         .blob {
             position: absolute;
@@ -95,7 +109,7 @@
 
     <nav class="glass-nav sticky top-12 z-40 w-full px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-parsGreen rounded flex items-center justify-center font-bold text-parsBlue text-xl">P</div>
+            <img src="logo3.jpg" alt="Logo" class="w-12 h-12 rounded-full object-cover border-2 border-parsGreen shadow-[0_0_10px_rgba(0,255,136,0.3)]">
             <span class="text-2xl font-bold tracking-wide text-white">پارس <span class="text-parsGreen">ترید</span></span>
         </div>
         
@@ -103,7 +117,7 @@
             <a href="#" class="hover:text-parsGreen transition">خانه</a>
             <a href="#blog" class="hover:text-parsGreen transition">بلاگ</a>
             <a href="#liveroom" class="hover:text-parsGreen transition">اتاق لایو</a>
-            <a href="#store" class="hover:text-parsGreen transition">فروشگاه</a>
+            <a href="#store" class="hover:text-parsGreen transition">خدمات</a>
         </div>
 
         <div class="flex gap-3">
@@ -146,7 +160,7 @@
     <section class="container mx-auto px-4 py-10">
         <div class="flex items-center gap-2 mb-6">
             <div class="w-1 h-8 bg-parsGreen rounded"></div>
-            <h2 class="text-3xl font-bold">داشبورد <span class="text-parsGreen">روزانه</span> بازار</h2>
+            <h2 class="text-3xl font-bold">ابزار های <span class="text-parsGreen">تریدت</span></h2>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -244,35 +258,48 @@
 
     <section id="store" class="container mx-auto px-4 py-16">
         <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-bold">فروشگاه <span class="text-parsGreen">خدمات</span></h2>
+            <h2 class="text-3xl font-bold">خدمات <span class="text-parsGreen">ما</span></h2>
             <a href="#" class="text-parsGreen hover:underline">مشاهده همه <i class="fas fa-arrow-left"></i></a>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="glass-box p-0 overflow-hidden group hover:border-parsGreen transition duration-300">
-                <div class="h-40 bg-gradient-to-r from-blue-900 to-slate-900 flex items-center justify-center">
-                    <i class="fas fa-user-graduate text-5xl text-white/50 group-hover:text-white transition"></i>
+            
+            <div class="glass-box p-0 overflow-hidden relative">
+                <div class="locked-overlay">
+                    <i class="fas fa-lock text-5xl text-parsGreen mb-4 drop-shadow-[0_0_10px_rgba(0,255,136,0.5)]"></i>
+                    <span class="text-xl font-bold text-white tracking-wider">در آینده‌ای نزدیک</span>
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">منتورینگ خصوصی</h3>
-                    <p class="text-gray-400 text-sm mb-4">جلسات تک نفره رفع اشکال و تدوین استراتژی شخصی.</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-parsGreen font-bold">تماس بگیرید</span>
-                        <a href="login.html" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-parsGreen hover:text-parsBlue transition"><i class="fas fa-shopping-cart"></i></a>
+                <div class="opacity-30 blur-sm select-none pointer-events-none">
+                    <div class="h-40 bg-gradient-to-r from-blue-900 to-slate-900 flex items-center justify-center">
+                        <i class="fas fa-user-graduate text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">منتورینگ خصوصی</h3>
+                        <p class="text-gray-400 text-sm mb-4">جلسات تک نفره رفع اشکال و تدوین استراتژی شخصی.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-parsGreen font-bold">تماس بگیرید</span>
+                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i class="fas fa-shopping-cart"></i></div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="glass-box p-0 overflow-hidden group hover:border-parsGreen transition duration-300">
-                <div class="h-40 bg-gradient-to-r from-green-900 to-slate-900 flex items-center justify-center">
-                    <i class="fas fa-trophy text-5xl text-white/50 group-hover:text-white transition"></i>
+            <div class="glass-box p-0 overflow-hidden relative">
+                <div class="locked-overlay">
+                    <i class="fas fa-lock text-5xl text-parsGreen mb-4 drop-shadow-[0_0_10px_rgba(0,255,136,0.5)]"></i>
+                    <span class="text-xl font-bold text-white tracking-wider">در آینده‌ای نزدیک</span>
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">ورودی تورنمنت</h3>
-                    <p class="text-gray-400 text-sm mb-4">شرکت در لیگ معامله‌گران پارس ترید با جوایز ارزنده.</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-parsGreen font-bold">۵۰ تتر</span>
-                        <a href="login.html" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-parsGreen hover:text-parsBlue transition"><i class="fas fa-shopping-cart"></i></a>
+                <div class="opacity-30 blur-sm select-none pointer-events-none">
+                    <div class="h-40 bg-gradient-to-r from-green-900 to-slate-900 flex items-center justify-center">
+                        <i class="fas fa-trophy text-5xl text-white"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">ورودی تورنمنت</h3>
+                        <p class="text-gray-400 text-sm mb-4">شرکت در لیگ معامله‌گران پارس ترید با جوایز ارزنده.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-parsGreen font-bold">۵۰ تتر</span>
+                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><i class="fas fa-shopping-cart"></i></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -345,7 +372,7 @@
                     <ul class="space-y-2 text-sm text-gray-400">
                         <li><a href="#" class="hover:text-parsGreen">خانه</a></li>
                         <li><a href="#blog" class="hover:text-parsGreen">بلاگ</a></li>
-                        <li><a href="#store" class="hover:text-parsGreen">فروشگاه</a></li>
+                        <li><a href="#store" class="hover:text-parsGreen">خدمات</a></li>
                         <li><a href="login.html" class="hover:text-parsGreen">ورود / عضویت</a></li>
                     </ul>
                 </div>
@@ -367,6 +394,7 @@
 
 </body>
 </html>
+
 
 
 
